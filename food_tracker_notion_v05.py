@@ -53,9 +53,14 @@ def fetch_notion_data(notion, database_id):
                 "F": f,
                 "C": c
             })
-        except KeyError:
-            continue
+    except KeyError as e:
+        print("❌ データスキップ（キーエラー）:", e)
+        continue
     df = pd.DataFrame(records)
+    
+    # "date" が None の行は除外（←ここ追加）
+    df = df[df["date"].notnull()]
+    
     df["date"] = pd.to_datetime(df["date"]).dt.date
     return df
 
