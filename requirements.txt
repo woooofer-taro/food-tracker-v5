@@ -3,3 +3,4 @@ notion-client
 openai
 python-dotenv
 pandas
+plotly
