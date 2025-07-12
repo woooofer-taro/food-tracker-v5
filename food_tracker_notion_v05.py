@@ -9,8 +9,6 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
-import streamlit as st
-from datetime import datetime
 
 # .env 読み込み
 load_dotenv()
@@ -43,7 +41,7 @@ def fetch_notion_data(notion, database_id):
         try:
             date = props["日付"]["date"]["start"]
             weight = props["体重"]["number"]
-            kcal = props["kcal"]["number"]
+            kcal = props["カロリー"]["number"]
             p = props["P"]["number"]
             f = props["F"]["number"]
             c = props["C"]["number"]
@@ -68,18 +66,14 @@ def fetch_notion_data(notion, database_id):
     # デバッグ出力（StreamlitでもOK）
     st.write("📊 DataFrame作成後の列:", df.columns)
 
-
-    
     if not df.empty and "date" in df.columns:
         df = df[df["date"].notnull()]
         df["date"] = pd.to_datetime(df["date"]).dt.date
     else:
         st.warning("📭 データが空 or 'date' カラムが見つかりませんでした。")
         return pd.DataFrame()
-
-import streamlit as st
-import plotly.graph_objects as go
-from datetime import datetime, timedelta
+    
+    return df
 
 #streamlit体重グラフ
 def plot_weight_chart(df):
@@ -111,6 +105,8 @@ def plot_weight_chart(df):
     )
 
     st.plotly_chart(fig, use_container_width=True)
+
+    return df
 
 
 def plot_pfc_radar_chart(df):
@@ -268,6 +264,8 @@ if submitted:
 
 df = fetch_notion_data(notion, NOTION_DATABASE_ID)
 plot_weight_chart(df)
+plot_pfc_radar_chart(df)
+
 plot_pfc_radar_chart(df)
 
 print("👉 records数:", len(records))
