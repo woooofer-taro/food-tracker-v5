@@ -9,6 +9,8 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
+import streamlit as st
+from datetime import datetime
 
 # .env 読み込み
 load_dotenv()
@@ -45,15 +47,21 @@ def fetch_notion_data(notion, database_id):
             p = props["P"]["number"]
             f = props["F"]["number"]
             c = props["C"]["number"]
-            records.append({
-                "date": date,
-                "weight": weight,
-                "kcal": kcal,
-                "P": p,
-                "F": f,
-                "C": c
-            })
+    
+            if date is not None:
+                records.append({
+                    "date": date,
+                    "weight": weight,
+                    "kcal": kcal,
+                    "P": p,
+                    "F": f,
+                    "C": c
+                })
+            else:
+                print("❌ スキップ：日付が None のため追加せず")
+    
         except KeyError as e:
+            print("❌ データスキップ（キーエラー）:", e)
             continue
     
     df = pd.DataFrame(records)
@@ -104,10 +112,6 @@ def plot_weight_chart(df):
 
     st.plotly_chart(fig, use_container_width=True)
 
-import matplotlib.pyplot as plt
-import numpy as np
-import streamlit as st
-from datetime import datetime
 
 def plot_pfc_radar_chart(df):
     st.subheader("🍗 PFCバランスの達成率（1日分）")
