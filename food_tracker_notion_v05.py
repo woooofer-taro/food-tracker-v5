@@ -57,6 +57,10 @@ def fetch_notion_data(notion, database_id):
             continue
     
     df = pd.DataFrame(records)
+    # デバッグ出力（StreamlitでもOK）
+    st.write("📊 DataFrame作成後の列:", df.columns)
+
+
     
     if not df.empty and "date" in df.columns:
         df = df[df["date"].notnull()]
@@ -261,3 +265,9 @@ if submitted:
 df = fetch_notion_data(notion, NOTION_DATABASE_ID)
 plot_weight_chart(df)
 plot_pfc_radar_chart(df)
+
+print("👉 records数:", len(records))
+if records:
+    print("📄 1件目:", records[0])
+else:
+    print("⚠️ records 空です")
