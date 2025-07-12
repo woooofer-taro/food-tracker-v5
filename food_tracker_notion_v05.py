@@ -54,16 +54,16 @@ def fetch_notion_data(notion, database_id):
                 "C": c
             })
         except KeyError as e:
-            print("❌ データスキップ（キーエラー）:", e)
             continue
     
     df = pd.DataFrame(records)
     
-    # "date" が None の行は除外（←ここ追加）
-    df = df[df["date"].notnull()]
-    
-    df["date"] = pd.to_datetime(df["date"]).dt.date
-    return df
+    if not df.empty and "date" in df.columns:
+        df = df[df["date"].notnull()]
+        df["date"] = pd.to_datetime(df["date"]).dt.date
+    else:
+        st.warning("📭 データが空 or 'date' カラムが見つかりませんでした。")
+        return pd.DataFrame()
 
 import streamlit as st
 import plotly.graph_objects as go
